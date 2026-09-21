@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Fitcotch",
+    "slug": "fitcotch",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0f0f14"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ir.fitcotch.app"
+    },
+    "android": {
+      "package": "ir.fitcotch.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f0f14"
+      },
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "usesCleartextTraffic": true
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "برای آپلود عکس پیشرفت به دسترسی گالری نیاز داریم."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "fe907363-691b-492d-8ff9-8a93f272ef7c"
+      }
+    }
+  }
+}

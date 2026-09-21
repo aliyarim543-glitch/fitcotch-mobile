@@ -1,0 +1,16 @@
+import { DEFAULT_COLORS, type AppColors } from "./presets";
+
+/** رنگ‌های پیش‌فرض — برای سازگاری با importهای قدیمی */
+export const colors: AppColors = { ...DEFAULT_COLORS };
+
+export const radius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  full: 999,
+};
+
+export const spacing = (n: number) => n * 4;
+
+export type { AppColors };

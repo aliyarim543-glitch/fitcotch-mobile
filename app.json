@@ -2,6 +2,8 @@
   "expo": {
     "name": "Fitcotch",
     "slug": "fitcotch",
+    "owner": "mojmojis-team",
+    
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",

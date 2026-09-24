@@ -1,10 +1,18 @@
 import { useCallback, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  Image,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import api from "../../api/client";
 import { colors, radius } from "../../theme/colors";
 import { Card, EmptyState } from "../../components/UI";
 import { ScreenHeader } from "../../components/ScreenHeader";
+import { exerciseImageUrl } from "../../utils/media";
 
 export default function TrainerExerciseLibraryScreen() {
   const [items, setItems] = useState<any[]>([]);
@@ -22,11 +30,18 @@ export default function TrainerExerciseLibraryScreen() {
     }
   }, [q]);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   return (
     <ScrollView style={styles.screen}>
-      <ScreenHeader title="کتابخانه تمرین" subtitle="حرکات قابل استفاده در برنامه" />
+      <ScreenHeader
+        title="کتابخانه تمرین"
+        subtitle="حرکات قابل استفاده در برنامه"
+      />
       <View style={styles.body}>
         <TextInput
           style={styles.search}
@@ -42,14 +57,40 @@ export default function TrainerExerciseLibraryScreen() {
         ) : items.length === 0 ? (
           <EmptyState text="حرکتی پیدا نشد" />
         ) : (
-          items.slice(0, 100).map((ex, i) => (
-            <Card key={ex._id || i}>
-              <Text style={styles.title}>{ex.nameFa || ex.name || ex.nameEn}</Text>
-              <Text style={styles.meta}>
-                {[ex.muscleGroup, ex.equipment, ex.level].filter(Boolean).join(" · ")}
-              </Text>
-            </Card>
-          ))
+          items.slice(0, 100).map((ex, i) => {
+            const img = exerciseImageUrl(ex);
+            return (
+              <Card key={ex._id || i}>
+                <View style={styles.row}>
+                  {img ? (
+                    <Image
+                      source={{ uri: img }}
+                      style={styles.thumb}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <View style={[styles.thumb, styles.thumbEmpty]}>
+                      <Text style={styles.thumbEmptyText}>—</Text>
+                    </View>
+                  )}
+                  <View style={styles.info}>
+                    <Text style={styles.title}>
+                      {ex.nameFa || ex.name || ex.nameEn}
+                    </Text>
+                    <Text style={styles.meta}>
+                      {[
+                        ex.primaryMuscle || ex.muscleGroup,
+                        ex.equipment,
+                        ex.difficulty || ex.level,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            );
+          })
         )}
       </View>
     </ScrollView>
@@ -68,6 +109,30 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
+  row: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 12,
+  },
+  thumb: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+  },
+  thumbEmpty: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  thumbEmptyText: { color: colors.textMuted },
+  info: { flex: 1 },
   title: { color: colors.text, fontWeight: "700", textAlign: "right" },
-  meta: { color: colors.textMuted, fontSize: 12, textAlign: "right", marginTop: 4 },
+  meta: {
+    color: colors.textMuted,
+    fontSize: 12,
+    textAlign: "right",
+    marginTop: 4,
+  },
 });

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, StyleSheet, RefreshControl, TouchableOpacity, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   Scale,
@@ -16,6 +16,7 @@ import { Button } from "../../components/Button";
 import { FormField } from "../../components/FormField";
 import { ScreenHeader } from "../../components/ScreenHeader";
 import type { WorkoutPlan, MealPlan, ProgressLog, StoreOrder } from "../../types";
+import { exerciseImageUrl, resolveMediaUrl } from "../../utils/media";
 
 export default function TraineeHomeScreen({ navigation }: any) {
   const { user, updateUser } = useAuth();
@@ -207,8 +208,19 @@ export default function TraineeHomeScreen({ navigation }: any) {
                     <Text style={{ color: colors.accent }}>{open ? "بستن" : "باز"}</Text>
                   </TouchableOpacity>
                   {open &&
-                    exercises.map((ex: any, i: number) => (
-                      <View key={i} style={{ marginTop: 8, paddingRight: 6 }}>
+                    exercises.map((ex: any, i: number) => {
+                      const img = exerciseImageUrl(ex);
+                      const pairImg = resolveMediaUrl(
+                        ex.techniqueParams?.pairImageUrl ||
+                          ex.techniqueParams?.pairExerciseImageUrl ||
+                          null
+                      );
+                      return (
+                      <View key={i} style={{ marginTop: 10, paddingRight: 6, flexDirection: "row-reverse", gap: 10 }}>
+                        {img ? (
+                          <Image source={{ uri: img }} style={{ width: 64, height: 64, borderRadius: 8, backgroundColor: colors.surface }} resizeMode="contain" />
+                        ) : null}
+                        <View style={{ flex: 1 }}>
                         <Text style={{ color: colors.text, fontSize: 13, textAlign: "right" }}>
                           {ex.name}
                           {ex.technique === "superset" ? " (سوپرست)" : ""}
@@ -218,15 +230,22 @@ export default function TraineeHomeScreen({ navigation }: any) {
                           {ex.restSeconds ? ` — استراحت ${ex.restSeconds}ث` : ""}
                         </Text>
                         {ex.technique === "superset" && ex.techniqueParams?.pairExerciseName ? (
-                          <Text style={{ color: colors.accent, fontSize: 12, textAlign: "right", marginTop: 2 }}>
-                            + {ex.techniqueParams.pairExerciseName}
-                            {ex.techniqueParams.pairSets
-                              ? ` — ${ex.techniqueParams.pairSets}×${ex.techniqueParams.pairReps || ""}`
-                              : ""}
-                          </Text>
+                          <View style={{ marginTop: 4, flexDirection: "row-reverse", gap: 8, alignItems: "center" }}>
+                            {pairImg ? (
+                              <Image source={{ uri: pairImg }} style={{ width: 40, height: 40, borderRadius: 6 }} resizeMode="contain" />
+                            ) : null}
+                            <Text style={{ color: colors.accent, fontSize: 12, textAlign: "right", flex: 1 }}>
+                              + {ex.techniqueParams.pairExerciseName}
+                              {ex.techniqueParams.pairSets
+                                ? ` — ${ex.techniqueParams.pairSets}×${ex.techniqueParams.pairReps || ""}`
+                                : ""}
+                            </Text>
+                          </View>
                         ) : null}
+                        </View>
                       </View>
-                    ))}
+                      );
+                    })}
                 </View>
               );
             })}
